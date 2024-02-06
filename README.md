@@ -1,6 +1,6 @@
 <br />
 <p align="center">
-    <a href="https://github.com/mosaicml/composer#gh-light-mode-only" class="only-light">
+    <a href="https://gitbhub.com/mosaicml/composer#gh-light-mode-only" class="only-light">
       <img src="https://storage.googleapis.com/docs.mosaicml.com/images/header_light.svg" width="50%"/>
     </a>
     <!-- SETUPTOOLS_LONG_DESCRIPTION_HIDE_BEGIN -->

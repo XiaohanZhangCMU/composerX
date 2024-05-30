@@ -2231,7 +2231,9 @@ class Trainer:
         .. seealso:: :meth:`.Engine.close` for additional information.
         """
         self.engine.close()
+        log.warning('In trainer: I am here 1. before barrier()')
         dist.barrier()
+        log.warning('In trainer: I am here 2. after barrier()')
 
     def _ensure_metrics_device_and_dtype(
         self,

@@ -394,16 +394,20 @@ def _launch_processes(
 
 def _monitor_processes(processes: Dict[int, subprocess.Popen]):
     try:
+        log.warning('in monitor process, I am here 1')
         while True:
             process_has_crashed = False
             all_processes_finished = True
             for global_rank, process in processes.items():
+                log.warning(f'in monitor process, I am here 2: {global_rank}, {process.pid}')
                 if process.poll() is None:
                     # the process is still running
+                    log.warning('in monitor process, I am here 2.1')
                     all_processes_finished = False
                     continue
                 else:
                     # return code of 0 implies clean exit
+                    log.warning('in monitor process, I am here 3')
                     if process.returncode != 0:
                         log.error(f'Rank {global_rank} crashed with exit code {process.returncode}.')
                         process_has_crashed = True

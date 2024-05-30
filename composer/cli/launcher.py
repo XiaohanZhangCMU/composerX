@@ -458,12 +458,15 @@ def _print_process_exit_status(global_rank: int, process: subprocess.Popen):
 
 
 def _cleanup_processes(processes: Dict[int, subprocess.Popen]):
+    log.warning(f'I am here 0: Enter cleanup_processes')
     for global_rank, process in processes.items():
         process.poll()
+        log.warning(f'I am here 0.1: process {process.pid} has return code {process.returncode}')
         if process.returncode is None:
             log.info('Killing global rank %s (PID %s) with SIGTERM', global_rank, process.pid)
             # Assuming that child processes correctly handle SIGTERM to cleanup any children
             try:
+                log.warning(f'I am here 1: Trying to kill {process.pid}')
                 os.kill(process.pid, signal.SIGTERM)
             except ProcessLookupError:
                 pass
@@ -484,6 +487,7 @@ def _cleanup_processes(processes: Dict[int, subprocess.Popen]):
     except KeyboardInterrupt:
         pass
 
+    log.warning(f'I am here 2: Entering Sigkill')
     for global_rank, process in processes.items():
         process.poll()
         if process.returncode is None:
@@ -499,6 +503,7 @@ def _cleanup_processes(processes: Dict[int, subprocess.Popen]):
             else:
                 # If using SIGKILL, manually kill all child processes, since the main training process
                 # likely won't be able to intercept the signal and clean up its children.
+                log.warning(f'I am here 3: Manually Sigkill')
                 for psutil_proc in [proc, *proc.children(recursive=True)]:
                     try:
                         os.kill(psutil_proc.pid, signal.SIGKILL)

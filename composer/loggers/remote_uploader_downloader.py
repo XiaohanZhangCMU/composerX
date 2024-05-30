@@ -559,23 +559,29 @@ class RemoteUploaderDownloader(LoggerDestination):
         #    self._file_upload_queue. This will mean that self._logged_objects is empty.
         # 3. Send a flag to the workers that all uploads are enqueued in self._file_upload_queue.
         # 4. Wait for the workers to shut down. This means that all files have been uploaded
+        log.warning('In UD: here 1')
         if self._enqueue_thread_flag is not None:
             self._enqueue_thread_flag.set()
 
+        log.warning('In UD: here 2')
         if self._enqueue_thread is not None:
             self._enqueue_thread.join()
 
+        log.warning('In UD: here 3')
         if self._worker_flag is not None:
             self._worker_flag.set()
 
+        log.warning('In UD: here 4')
         # Then, ensure all workers have finished all uploads
         for worker in self._workers:
             worker.join()
+        log.warning('In UD: here 5')
 
         # Clean up the tempdir
         if self._tempdir is not None:
             self._tempdir.cleanup()
 
+        log.warning('In UD: here 6')
         # Empty the completed queue
         # This cleanup will not be done by the enqueue_thread anymore, as that thread has been shut down
         while True:
@@ -586,6 +592,7 @@ class RemoteUploaderDownloader(LoggerDestination):
             self._enqueued_objects.remove(object_name)
             self._completed_queue.task_done()
 
+        log.warning('In UD: here 7')
         if len(self._enqueued_objects) > 0 or len(self._logged_objects) > 0:
             # Warn on all objects that have not been uploaded
             object_names = list(self._enqueued_objects)
@@ -596,6 +603,7 @@ class RemoteUploaderDownloader(LoggerDestination):
                     ', '.join(self._enqueued_objects),
                 ),
             )
+        log.warning('In UD: here 8')
 
         # Reset all variables
         self._logged_objects.clear()

@@ -561,6 +561,7 @@ class Engine():
             else:
                 callback_to_has_exception[callback] = False
 
+        log.warning(f'[engine]: I am here 1, callbacks = {state.callbacks}')
         for callback in state.callbacks:
             if callback_to_has_exception[callback] is False:
                 try:

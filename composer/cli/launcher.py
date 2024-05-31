@@ -527,6 +527,7 @@ def _cleanup_processes(processes: Dict[int, subprocess.Popen]):
 
 
 def _aggregate_process_returncode(processes: Dict[int, subprocess.Popen]) -> int:
+    log.warning('Entering _aggregate_process_returncode')
     for global_rank, process in processes.items():
         process.poll()
         if process.returncode is None:
@@ -536,6 +537,7 @@ def _aggregate_process_returncode(processes: Dict[int, subprocess.Popen]) -> int
             log.error('Global rank %s (PID %s) exited with code %s', global_rank, process.pid, process.returncode)
             return process.returncode
 
+    log.warning('Leaving _aggregate_process_returncode')
     return 0
 
 
@@ -593,7 +595,9 @@ def main():
         print('Killing training processes')
     finally:
         _cleanup_processes(processes)
+        log.warning('in launcher: I am here 10: finished _cleanup_processes')
         log_tmpdir.cleanup()
+        log.warning('in launcher: I am here 11: after log_tmpdir.cleanup')
         return _aggregate_process_returncode(processes)
 
 

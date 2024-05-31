@@ -565,6 +565,7 @@ class RemoteUploaderDownloader(LoggerDestination):
 
         log.warning('In UD: here 2')
         if self._enqueue_thread is not None:
+            log.warning(f'enqueue_thread {self._enqueue_thread} is being joined.')
             self._enqueue_thread.join()
 
         log.warning('In UD: here 3')

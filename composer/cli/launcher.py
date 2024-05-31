@@ -465,13 +465,14 @@ def _cleanup_processes(processes: Dict[int, subprocess.Popen]):
     log.warning(f'I am here 0: Enter cleanup_processes')
     for global_rank, process in processes.items():
         process.poll()
-        log.warning(f'I am here 0.1: process {process.pid} has return code {process.returncode}')
+        log.warning(f'I am here 0.1: rank {global_rank} - process {process.pid} has return code {process.returncode}')
         if process.returncode is None:
             log.info('Killing global rank %s (PID %s) with SIGTERM', global_rank, process.pid)
             # Assuming that child processes correctly handle SIGTERM to cleanup any children
             try:
-                log.warning(f'I am here 1: Trying to kill {process.pid}')
+                log.warning(f'I am here 1.1: Trying to kill {process.pid}')
                 os.kill(process.pid, signal.SIGTERM)
+                log.warning(f'I am here 1.2: After kill {process.pid}')
             except ProcessLookupError:
                 pass
 
@@ -510,7 +511,9 @@ def _cleanup_processes(processes: Dict[int, subprocess.Popen]):
                 log.warning(f'I am here 3: Manually Sigkill')
                 for psutil_proc in [proc, *proc.children(recursive=True)]:
                     try:
+                        log.warning(f'I am here 3.1: Before Sigkill {psutil_proc}')
                         os.kill(psutil_proc.pid, signal.SIGKILL)
+                        log.warning(f'I am here 3.1: After Sigkill {psutil_proc}')
                     except ProcessLookupError:
                         pass
     for global_rank, process in processes.items():

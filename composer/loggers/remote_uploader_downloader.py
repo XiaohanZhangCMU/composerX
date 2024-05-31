@@ -450,6 +450,8 @@ class RemoteUploaderDownloader(LoggerDestination):
         1.  It enqueues objects from ``self._logged_objects`` onto ``self._file_upload_queue``.
         2.  It keeps ``self._enqueued_objects`` in sync with ``self._file_upload_queue`` by listening to ``self._completed_uploads``.
         """
+        log.warning(f"Thread ID: {threading.get_ident()}, Process ID: {os.getpid()}")
+
         assert self._enqueue_thread_flag is not None
         while True:
             with self._object_lock:

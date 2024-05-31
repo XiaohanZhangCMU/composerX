@@ -529,7 +529,9 @@ def _cleanup_processes(processes: Dict[int, subprocess.Popen]):
 def _aggregate_process_returncode(processes: Dict[int, subprocess.Popen]) -> int:
     log.warning('Entering _aggregate_process_returncode')
     for global_rank, process in processes.items():
+        log.warning(f'In _aggregate_process_returncode: before poll: {process.pid}')
         process.poll()
+        log.warning(f'In _aggregate_process_returncode: after poll: {process.pid}')
         if process.returncode is None:
             log.error('Global rank %s (PID %s) has still not exited; return exit code 1.', global_rank, process.pid)
             return 1

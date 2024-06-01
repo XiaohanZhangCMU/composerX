@@ -623,7 +623,9 @@ def main():
         log_tmpdir.cleanup()
         log.warning('in launcher: I am here 11: after log_tmpdir.cleanup')
         c = _aggregate_process_returncode(processes)
+        log.warning('I am in launch main terminate resource tracker 1')
         terminate_resource_tracker()
+        log.warning('I am in launch main terminate resource tracker 2')
         return c
 
 

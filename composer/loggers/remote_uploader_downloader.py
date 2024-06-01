@@ -578,7 +578,7 @@ class RemoteUploaderDownloader(LoggerDestination):
         # Then, ensure all workers have finished all uploads
         for worker in self._workers:
             log.warning(f'Worker {worker} is being joined.')
-            worker.join(timeout=0.1)
+            worker.join()
             if worker.is_alive():
                 log.warning(f'Worker {worker} did not exit in time and is still alive.')
 

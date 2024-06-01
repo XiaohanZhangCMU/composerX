@@ -567,6 +567,7 @@ def _aggregate_process_returncode(processes: Dict[int, subprocess.Popen]) -> int
 def main():
     """Entrypoint into the Composer CLI."""
     args = _parse_args()
+    atexit.register(terminate_resource_tracker)
 
     logging.basicConfig()
     log.setLevel(logging.INFO if args.verbose else logging.WARNING)
@@ -621,7 +622,9 @@ def main():
         log.warning('in launcher: I am here 10: finished _cleanup_processes')
         log_tmpdir.cleanup()
         log.warning('in launcher: I am here 11: after log_tmpdir.cleanup')
-        return _aggregate_process_returncode(processes)
+        c = _aggregate_process_returncode(processes)
+        terminate_resource_tracker()
+        return c
 
 
 if __name__ == '__main__':

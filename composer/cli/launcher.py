@@ -300,6 +300,19 @@ def _patch_env(**environs: str):
                 os.environ[k] = v
 
 
+from multiprocessing import resource_tracker
+import atexit
+def terminate_resource_tracker():
+    rt = resource_tracker._resource_tracker
+    if rt._pid is not None:
+        pid = rt._pid
+        print(f"Terminating resource_tracker process with PID: {pid}")
+        try:
+            os.kill(pid, signal.SIGTERM)  # Terminate the process
+            rt._pid = None  # Ensure we don't attempt to terminate it again
+        except OSError as e:
+            print(f"Error terminating resource_tracker: {e}")
+
 def _launch_processes(
     nproc: int,
     world_size: int,
@@ -532,6 +545,8 @@ def _cleanup_processes(processes: Dict[int, subprocess.Popen]):
             _print_process_exit_status(global_rank, process)
 
 
+
+
 def _aggregate_process_returncode(processes: Dict[int, subprocess.Popen]) -> int:
     log.warning('Entering _aggregate_process_returncode')
     for global_rank, process in processes.items():
@@ -552,6 +567,8 @@ def _aggregate_process_returncode(processes: Dict[int, subprocess.Popen]) -> int
 def main():
     """Entrypoint into the Composer CLI."""
     args = _parse_args()
+
+    atexit.register(terminate_resource_tracker)
 
     logging.basicConfig()
     log.setLevel(logging.INFO if args.verbose else logging.WARNING)

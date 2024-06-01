@@ -306,12 +306,12 @@ def terminate_resource_tracker():
     rt = resource_tracker._resource_tracker
     if rt._pid is not None:
         pid = rt._pid
-        print(f"Terminating resource_tracker process with PID: {pid}")
+        log.warning(f"Terminating resource_tracker process with PID: {pid}")
         try:
             os.kill(pid, signal.SIGTERM)  # Terminate the process
             rt._pid = None  # Ensure we don't attempt to terminate it again
         except OSError as e:
-            print(f"Error terminating resource_tracker: {e}")
+            log.warning(f"Error terminating resource_tracker: {e}")
 
 def _launch_processes(
     nproc: int,
@@ -568,8 +568,6 @@ def main():
     """Entrypoint into the Composer CLI."""
     args = _parse_args()
 
-    atexit.register(terminate_resource_tracker)
-
     logging.basicConfig()
     log.setLevel(logging.INFO if args.verbose else logging.WARNING)
 
@@ -627,4 +625,11 @@ def main():
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    atexit.register(terminate_resource_tracker)
+    log.warning('I am in launch main 1')
+    a = main()
+    log.warning('I am in launch main 2')
+    terminate_resource_tracker()
+    log.warning('I am in launch main 3')
+    sys.exit(a)
+
